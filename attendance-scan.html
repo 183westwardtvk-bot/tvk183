@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Attendance</title>
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#111;
+  color:#fff;
+  font-family:Segoe UI;
+}
+
+.container{
+  background:#1c1c1c;
+  padding:30px;
+  border-radius:16px;
+  width:100%;
+  max-width:360px;
+  text-align:center;
+  box-shadow:0 0 20px rgba(0,0,0,.6);
+}
+
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:10px;
+  border:none;
+  font-size:15px;
+}
+
+input[readonly]{
+  background:#333;
+  color:#ccc;
+}
+
+button{
+  background:#4caf50;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Attendance</h2>
+
+  <input id="meeting" readonly>
+  <input id="date" readonly>
+  <input id="name" placeholder="Your Name">
+
+  <button onclick="submitAttendance()">Submit</button>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+document.getElementById("meeting").value = params.get("meeting");
+document.getElementById("date").value = params.get("date");
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzOLVmw7KAZ4TJWow4BV4JfZnXqp8aBI83N4c55Wca2rkGRj25y29xklPRb-a-iMYQL/exec";
+
+function submitAttendance(){
+  const name = document.getElementById("name").value;
+  if(!name){
+    alert("Enter your name");
+    return;
+  }
+
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({
+      action:"saveAttendance",
+      meeting: meeting.value,
+      date: date.value,
+      name: name
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    alert(res.message);
+    document.getElementById("name").value="";
+  });
+}
+</script>
+
+</body>
+</html>

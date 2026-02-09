@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("tvk_dashboard.webp") no-repeat center/cover;
+    font-family: "Segoe UI", sans-serif;
+    color: #fff;
+}
+
+/* Bottom center menu */
+.dashboard {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+/* Circle outline button */
+.card {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    position: relative;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Animated yellow-red border */
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 3px;
+    background: conic-gradient(#ffeb3b, #ff9800, #ff5722, #ffeb3b);
+    -webkit-mask: radial-gradient(circle, transparent 62%, black 64%);
+    mask: radial-gradient(circle, transparent 62%, black 64%);
+    animation: spin 3s linear infinite;
+}
+
+.card:hover {
+    transform: scale(1.12);
+    transition: transform 0.3s ease;
+}
+
+.card span {
+    position: relative;
+    z-index: 2;
+    font-size: 14px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.logout {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    cursor: pointer;
+    color: #ff6b6b;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="logout" onclick="logout()">Logout</div>
+
+<div class="dashboard">
+
+    <!-- ADMIN MENUS -->
+    <div class="card admin-only" onclick="go('admin.html')"><span>Admin</span></div>
+    <div class="card admin-only" onclick="go('schedule.html')"><span>Schedule<br>Planner</span></div>
+
+    <!-- USER DATA (FLOW CONTROLLED) -->
+    <div class="card admin-only" onclick="openUserData()"><span>User<br>Data</span></div>
+
+    <div class="card admin-only" onclick="go('plannerlist.html')"><span>Planner<br>List</span></div>
+    <div class="card admin-only" onclick="go('media.html')"><span>Media<br>Upload</span></div>
+    <div class="card admin-only" onclick="go('balancesheet.html')"><span>Balance<br>Sheet</span></div>
+    <div class="card admin-only" onclick="go('attendance.html')"><span>Attendance<br>Sheet</span>
+</div>
+    <!-- USER ONLY -->
+    <div class="card user-only" onclick="go('my-profile.html')"><span>My<br>Profile</span></div>
+
+</div>
+
+<script>
+const role = sessionStorage.getItem("role");
+
+/* Block direct dashboard access */
+if (!role) {
+    window.location.href = "index.html";
+}
+
+/* Role-based menu visibility */
+if (role === "admin") {
+    document.querySelectorAll(".user-only").forEach(e => e.style.display = "none");
+} else {
+    document.querySelectorAll(".admin-only").forEach(e => e.style.display = "none");
+}
+
+function go(page) {
+    window.location.href = page;
+}
+
+/* 🔐 Flow control for User Data */
+function openUserData() {
+    sessionStorage.setItem("fromDashboard", "true");
+    window.location.href = "userdata.html";
+}
+
+function logout() {
+    sessionStorage.clear();
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

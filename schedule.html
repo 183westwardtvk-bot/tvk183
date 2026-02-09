@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Schedule Planner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
+    url("schedule_bg.jpg") no-repeat center/cover;
+  font-family:Segoe UI,sans-serif;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* ===== HEADER ===== */
+header{
+  margin:28px 0 20px;
+}
+header h1{
+  margin:0;
+  font-size:26px;
+  letter-spacing:1px;
+}
+
+/* ===== ROW (CIRCLE + INPUT) ===== */
+.row{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin:14px 0;
+  overflow:visible;            /* ✅ prevents cropping */
+}
+
+/* ===== BIG CIRCLE BUTTON ===== */
+.circle{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  position:relative;
+  font-weight:600;
+  font-size:14px;
+  flex-shrink:0;
+}
+
+/* CENTER TEXT */
+.circle span{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:1.1;
+}
+
+/* OUTLINE ONLY (RED–YELLOW) */
+.circle::before{
+  content:"";
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+  background:conic-gradient(
+    #ffeb3b,
+    #ff9800,
+    #ff5722,
+    #ffeb3b
+  );
+  animation:spin 3s linear infinite;
+  pointer-events:none;
+
+  /* border only */
+  -webkit-mask: radial-gradient(circle, transparent 60%, black 62%);
+  mask: radial-gradient(circle, transparent 60%, black 62%);
+}
+
+@keyframes spin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+/* ===== SIDE INPUT PANEL ===== */
+.panel{
+  width:0;
+  min-width:0;
+  overflow:hidden;
+  transition:width .4s ease;
+  display:flex;
+  align-items:center;
+}
+
+.panel.active{
+  width:260px;                /* FULLY VISIBLE */
+}
+
+.panel input,
+.panel textarea{
+  width:240px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  outline:none;
+  font-size:14px;
+  box-sizing:border-box;
+}
+
+.panel textarea{
+  resize:none;
+  height:90px;
+}
+
+/* ===== SAVE BUTTON ===== */
+.save{
+  margin-top:26px;
+  width:320px;
+  padding:12px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(135deg,#ffeb3b,#ff5722);
+  font-weight:bold;
+  cursor:pointer;
+}
+
+#msg{
+  margin-top:10px;
+  text-align:center;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Schedule Planner</h1>
+</header>
+
+<!-- DATE -->
+<div class="row">
+  <div class="circle" onclick="openPanel('datePanel')">
+    <span>📅<br>Date</span>
+  </div>
+  <div class="panel" id="datePanel">
+    <input type="date" id="date">
+  </div>
+</div>
+
+<!-- PLACE -->
+<div class="row">
+  <div class="circle" onclick="openPanel('placePanel')">
+    <span>📍<br>Place</span>
+  </div>
+  <div class="panel" id="placePanel">
+    <input type="text" id="place" placeholder="Enter place">
+  </div>
+</div>
+
+<!-- PLAN -->
+<div class="row">
+  <div class="circle" onclick="openPanel('contentPanel')">
+    <span>📝<br>Plan</span>
+  </div>
+  <div class="panel" id="contentPanel">
+    <textarea id="content" placeholder="Plan content"></textarea>
+  </div>
+</div>
+
+<button class="save" onclick="saveSchedule()">Save Plan</button>
+<div id="msg"></div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzOLVmw7KAZ4TJWow4BV4JfZnXqp8aBI83N4c55Wca2rkGRj25y29xklPRb-a-iMYQL/exec";
+
+/* OPEN SIDE PANEL */
+function openPanel(id){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  const panel = document.getElementById(id);
+  panel.classList.add("active");
+
+  const input = panel.querySelector("input,textarea");
+  if(input) setTimeout(()=>input.focus(),200);
+}
+
+/* SAVE SCHEDULE */
+function saveSchedule(){
+  const date = document.getElementById("date").value;
+  const place = document.getElementById("place").value.trim();
+  const content = document.getElementById("content").value.trim();
+  const msg = document.getElementById("msg");
+
+  if(!date || !place || !content){
+    msg.style.color="#ff6b6b";
+    msg.innerText="Fill all fields";
+    return;
+  }
+
+  msg.style.color="#fff";
+  msg.innerText="Saving...";
+
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain" },
+    body:JSON.stringify({
+      action:"saveSchedule",
+      date, place, content
+    })
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success){
+      msg.style.color="#4CAF50";
+      msg.innerText="Schedule saved";
+      setTimeout(()=>location.href="dashboard.html",1000);
+    }else{
+      msg.style.color="#ff6b6b";
+      msg.innerText="Failed";
+    }
+  });
+}
+</script>
+
+</body>
+</html>

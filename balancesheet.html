@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Balance Sheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  height:100vh;
+  background:
+    linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+    url("tvk_dashboard.webp") no-repeat center/cover;
+  font-family:Segoe UI,sans-serif;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+h1{margin:22px 0}
+
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:34px;
+  margin-bottom:18px;
+}
+
+.round-btn{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.round-btn span{
+  position:relative;
+  z-index:2;
+  text-align:center;
+}
+
+.round-btn .ring{
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+  background:conic-gradient(#ffeb3b,#ff9800,#ff5722,#ffeb3b);
+  animation:spin 4s linear infinite;
+  -webkit-mask: radial-gradient(circle, transparent 62%, black 64%);
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.content{
+  width:92%;
+  max-width:420px;
+  height:420px;
+  position:relative;
+}
+
+.section{
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);
+  border-radius:18px;
+  padding:14px;
+  display:none;
+}
+
+.section.active{display:block}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+input,select,textarea{
+  width:100%;
+  height:44px;
+  padding:0 14px;
+  border:none;
+  border-radius:12px;
+  font-size:14px;
+}
+
+textarea{
+  height:70px;
+  padding:10px 14px;
+  resize:none;
+}
+
+.save{
+  height:46px;
+  border:none;
+  border-radius:26px;
+  background:linear-gradient(135deg,#ffeb3b,#ff5722);
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* TABLE */
+.table-wrap{
+  max-height:210px;
+  overflow:auto;
+  border-radius:12px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  background:rgba(0,0,0,.35);
+}
+
+th,td{
+  padding:8px;
+  border-bottom:1px solid rgba(255,255,255,.2);
+  text-align:left;
+}
+
+th{
+  position:sticky;
+  top:0;
+  background:rgba(0,0,0,.6);
+  font-weight:700;
+}
+
+/* LOADER */
+#loader{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.wave{
+  display:flex;
+  gap:6px;
+}
+
+.wave span{
+  width:8px;
+  height:40px;
+  background:linear-gradient(#ffeb3b,#ff5722);
+  border-radius:20px;
+  animation:wave 1.2s infinite ease-in-out;
+}
+
+@keyframes wave{
+  0%,40%,100%{transform:scaleY(.4)}
+  20%{transform:scaleY(1)}
+}
+</style>
+</head>
+
+<body>
+
+<h1>Balance Sheet</h1>
+
+<div class="actions">
+  <div class="round-btn" onclick="showSection('add')">
+    <div class="ring"></div><span>Add<br>Data</span>
+  </div>
+  <div class="round-btn" onclick="showSection('view');loadCategories()">
+    <div class="ring"></div><span>View<br>Data</span>
+  </div>
+  <div class="round-btn" onclick="showSection('update')">
+    <div class="ring"></div><span>Update<br>Data</span>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ADD -->
+<div class="section active" id="add">
+  <div class="form-group">
+    <input type="date" id="a_eventDate">
+    <input id="a_event" placeholder="Event">
+    <input id="a_category" placeholder="Category">
+    <input id="a_source" placeholder="From / To">
+    <input type="number" id="a_amount" placeholder="Amount">
+    <select id="a_mode">
+      <option>Cash</option>
+      <option>UPI</option>
+      <option>Bank</option>
+    </select>
+    <textarea id="a_remarks" placeholder="Remarks"></textarea>
+    <button class="save" onclick="saveBalance()">Save Entry</button>
+  </div>
+</div>
+
+<!-- VIEW -->
+<div class="section" id="view">
+  <div class="form-group">
+    <input type="date" id="v_date">
+    <select id="v_category">
+      <option value="">All Categories</option>
+    </select>
+    <button class="save" onclick="loadBalance()">Load Data</button>
+    <button class="save" onclick="downloadCSV()">Download</button>
+
+    <div class="table-wrap">
+      <table id="balanceTable">
+        <thead>
+          <tr>
+            <th>Event Date</th>
+            <th>Event</th>
+            <th>Category</th>
+            <th>Source</th>
+            <th>Amount</th>
+            <th>Mode</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- UPDATE -->
+<div class="section" id="update">
+  <div class="form-group">
+    <input type="date" id="u_date">
+    <input id="u_category" placeholder="Category">
+    <button class="save" onclick="searchUpdate()">Search</button>
+    <div class="table-wrap">
+  <table id="updateTable">
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Source</th>
+        <th>Amount</th>
+        <th>Mode</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+  </div>
+</div>
+
+</div>
+
+<div id="loader">
+  <div class="wave">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzOLVmw7KAZ4TJWow4BV4JfZnXqp8aBI83N4c55Wca2rkGRj25y29xklPRb-a-iMYQL/exec";
+const loader=document.getElementById("loader");
+
+function showSection(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function showLoader(v){loader.style.display=v?"flex":"none";}
+
+/* SAVE */
+function saveBalance(){
+  showLoader(true);
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({
+      action:"saveBalance",
+      eventDate:a_eventDate.value,
+      event:a_event.value,
+      category:a_category.value,
+      source:a_source.value,
+      amount:a_amount.value,
+      mode:a_mode.value,
+      remarks:a_remarks.value
+    })
+  })
+  .then(r=>r.text())
+  .then(t=>{
+    alert(JSON.parse(t).message);
+    a_eventDate.value="";
+    a_event.value="";
+    a_category.value="";
+    a_source.value="";
+    a_amount.value="";
+    a_mode.value="Cash";
+    a_remarks.value="";
+  })
+  .finally(()=>showLoader(false));
+}
+
+/* LOAD CATEGORIES */
+function loadCategories(){
+  showLoader(true);
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({action:"getCategories"})
+  })
+  .then(r=>r.text())
+  .then(t=>{
+    const res=JSON.parse(t);
+    v_category.innerHTML='<option value="">All Categories</option>';
+    res.data?.forEach(c=>v_category.innerHTML+=`<option>${c}</option>`);
+  })
+  .finally(()=>showLoader(false));
+}
+
+/* LOAD DATA */
+function loadBalance(){
+  showLoader(true);
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({
+      action:"getBalanceData",
+      eventDate:v_date.value,
+      category:v_category.value
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    const tb=document.querySelector("#balanceTable tbody");
+    tb.innerHTML=res.data.length
+      ? res.data.map(d=>`
+        <tr>
+          <td>${d.eventDate}</td>
+          <td>${d.event}</td>
+          <td>${d.category}</td>
+          <td>${d.source}</td>
+          <td>₹${d.amount}</td>
+          <td>${d.mode}</td>
+        </tr>`).join("")
+      : "<tr><td colspan=6>No data</td></tr>";
+  })
+  .finally(()=>showLoader(false));
+}
+
+/* UPDATE DATA */
+function searchUpdate(){
+  showLoader(true);
+
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({
+      action:"searchBalanceForUpdate",
+      eventDate:u_date.value,
+      category:u_category.value
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    const tb = document.querySelector("#updateTable tbody");
+    tb.innerHTML = "";
+
+    if(!res.data.length){
+      tb.innerHTML = `<tr><td colspan="5">No data found</td></tr>`;
+      return;
+    }
+
+    res.data.forEach(d=>{
+      tb.innerHTML += `
+        <tr data-rowid="${d.rowId}">
+          <td class="txt">${d.event}</td>
+          <td class="txt">${d.source}</td>
+          <td class="txt">₹${d.amount}</td>
+          <td class="txt">${d.mode}</td>
+          <td>
+            <button class="save" onclick="editRow(this)">Edit</button>
+          </td>
+        </tr>`;
+    });
+  })
+  .finally(()=>showLoader(false));
+}
+function updateRow(rowId, btn){
+  const row = btn.closest("tr");
+  const inputs = row.querySelectorAll("input, select");
+
+  showLoader(true);
+
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({
+      action:"updateBalance",
+      rowId: rowId,
+      event: inputs[0].value,
+      source: inputs[1].value,
+      amount: inputs[2].value,
+      mode: inputs[3].value
+    })
+  })
+  .then(r=>r.text())
+  .then(t=>alert(JSON.parse(t).message))
+  .finally(()=>showLoader(false));
+}
+function editRow(btn){
+  const row = btn.closest("tr");
+  const cells = row.querySelectorAll(".txt");
+
+  row.dataset.old = row.innerHTML; // backup
+
+  row.innerHTML = `
+    <td><input value="${cells[0].innerText}"></td>
+    <td><input value="${cells[1].innerText}"></td>
+    <td><input type="number" value="${cells[2].innerText.replace("₹","")}"></td>
+    <td>
+      <select>
+        <option>Cash</option>
+        <option>UPI</option>
+        <option>Bank</option>
+      </select>
+    </td>
+    <td>
+      <button class="save" onclick="saveRow(this)">Save</button>
+    </td>
+  `;
+}
+
+function saveRow(btn){
+  const row = btn.closest("tr");
+  const rowId = row.dataset.rowid;
+  const inputs = row.querySelectorAll("input, select");
+
+  showLoader(true);
+
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({
+      action:"updateBalance",
+      rowId: rowId,
+      event: inputs[0].value,
+      source: inputs[1].value,
+      amount: inputs[2].value,
+      mode: inputs[3].value
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    alert(res.message);
+    searchUpdate(); // reload table
+  })
+  .finally(()=>showLoader(false));
+}
+/* DOWNLOAD */
+function downloadCSV(){
+  showLoader(true);
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({
+      action:"downloadBalanceCSV",
+      eventDate:v_date.value,
+      category:v_category.value
+    })
+  })
+  .then(r=>r.text())
+  .then(t=>{
+    const res=JSON.parse(t);
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob([res.csv]));
+    a.download="BalanceSheet.csv";
+    a.click();
+  })
+  .finally(()=>showLoader(false));
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>User Data</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("userdata.jpg") no-repeat center/cover;
+    font-family: "Segoe UI", sans-serif;
+    color: #fff;
+}
+
+.menu {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 50px;
+}
+
+.card {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    position: relative;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 4px;
+    background: conic-gradient(#ffeb3b,#ff9800,#ff5722,#ffeb3b);
+    -webkit-mask: radial-gradient(circle, transparent 62%, black 64%);
+    mask: radial-gradient(circle, transparent 62%, black 64%);
+    animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.back {
+    position: fixed;
+    top: 18px;
+    left: 24px;
+    cursor: pointer;
+    color: #ffeb3b;
+}
+
+.logout {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    cursor: pointer;
+    color: #ff6b6b;
+}
+</style>
+</head>
+
+<body>
+
+<div class="back" onclick="goBack()">← Dashboard</div>
+<div class="logout" onclick="logout()">Logout</div>
+
+<div class="menu">
+    <div class="card" onclick="openAddUser()"><span>Add<br>User</span></div>
+    <div class="card" onclick="go('view-user.html')"><span>View<br>User</span></div>
+</div>
+
+<script>
+const role = sessionStorage.getItem("role");
+const fromDashboard = sessionStorage.getItem("fromDashboard");
+
+/* 🔐 MUST COME FROM DASHBOARD */
+if (role !== "admin" || fromDashboard !== "true") {
+    window.location.href = "dashboard.html";
+}
+
+/* DO NOT remove fromDashboard here */
+
+function openAddUser() {
+    sessionStorage.setItem("fromUserData", "true");
+    window.location.href = "add-user.html";
+}
+
+function go(page) {
+    window.location.href = page;
+}
+
+function goBack() {
+    window.location.href = "dashboard.html";
+}
+
+function logout() {
+    sessionStorage.clear();
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
