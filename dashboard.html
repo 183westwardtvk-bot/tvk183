@@ -80,6 +80,53 @@ body {
     color: #ff6b6b;
     font-weight: bold;
 }
+@media (max-width: 600px) {
+
+    body {
+        background:
+            linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+            url("tvk_dashboard_mobile.webp") no-repeat center/cover;
+    }
+}
+/* Mobile circle alignment */
+@media (max-width: 600px) {
+
+    .dashboard {
+        position: fixed;
+        bottom: 10px;
+        left: 0;
+        transform: none;
+
+        width: 100%;
+        padding: 0 12px;
+
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        row-gap: 16px;
+        column-gap: 12px;
+
+        justify-items: center;
+    }
+
+    .card {
+        width: 90px;
+        height: 90px;
+    }
+
+    .card span {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+}
+/* Mobile background only */
+@media (max-width: 600px) {
+
+    body {
+        background:
+            linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+            url("tvk_dashboard_mob.jpg") no-repeat center/cover;
+    }
+}
 </style>
 </head>
 

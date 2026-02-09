@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Attendance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
@@ -45,6 +46,41 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
+/* Mobile-only adjustments */
+/* Mobile view only */
+@media (max-width: 600px) {
+
+  body{
+    background:
+      linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+      url("qr_mobile.jpg") no-repeat center/cover;
+
+    align-items: flex-start;
+    padding: 20px 12px;
+  }
+
+  .container{
+    width:100%;
+    max-width:100%;
+    padding:22px;
+    border-radius:14px;
+  }
+
+  h2{
+    font-size:20px;
+  }
+
+  input, button{
+    font-size:16px;   /* prevents iPhone zoom */
+    padding:14px;
+  }
+
+  button{
+    margin-top:16px;
+  }
+}
+/* Mobile background */
+
 </style>
 </head>
 

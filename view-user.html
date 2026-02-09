@@ -115,6 +115,84 @@ body{
   0%,100%{transform:scaleY(.4);opacity:.5}
   50%{transform:scaleY(1.4);opacity:1}
 }
+/* ================= MOBILE VIEW ONLY ================= */
+@media (max-width: 600px) {
+
+  /* 📱 Separate mobile background */
+  body{
+    background:
+      linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+      url("view_mob.jpg") no-repeat center/cover;
+  }
+
+  /* Header */
+  .header{
+    font-size:18px;
+    padding:14px 10px;
+  }
+
+  .list{
+    padding:0 10px 24px;
+  }
+
+  .user-row{
+    padding:12px;
+    border-radius:12px;
+  }
+
+  /* 🔥 FIX OVERLAP: switch to FLEX */
+  .row-top{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  /* Avatar */
+  .avatar{
+    width:46px;
+    height:46px;
+    flex-shrink:0;
+  }
+
+  /* 🔑 Text container (Name, Mobile, Voter) */
+  .row-top > div{
+    width:100%;
+  }
+
+  /* Stack ALL text cleanly */
+  .row-top > div:not(.avatar){
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+
+  /* Mobile & Voter shown ONE AFTER ANOTHER */
+  .label{
+    font-size:11px;
+  }
+
+  .value{
+    font-size:14px;
+    white-space:normal;   /* 🔥 prevents overlap */
+    word-break:break-word;
+  }
+
+  /* More button */
+  .more-btn{
+    margin:10px auto 0;
+    display:block;
+  }
+
+  /* Details section */
+  .details-grid{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+
+  .details-item{
+    font-size:13px;
+  }
+}
 </style>
 </head>
 

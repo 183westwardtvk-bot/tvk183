@@ -136,6 +136,91 @@ header h1{
   text-align:center;
   font-size:14px;
 }
+/* ================= MOBILE VIEW ONLY ================= */
+@media (max-width: 600px) {
+
+  /* 📱 Mobile background */
+  body{
+    background:
+      linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+      url("sch_mob.jpg") no-repeat center/cover;
+
+    align-items:center;
+    padding:20px 12px 30px;
+  }
+
+  /* Header */
+  header{
+    margin:18px 0 14px;
+  }
+
+  header h1{
+    font-size:20px;
+    text-align:center;
+  }
+
+  /* 🔄 Each row becomes vertical */
+  .row{
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+    margin:16px 0;
+  }
+
+  /* 🔵 Circle button (smaller, centered) */
+  .circle{
+    width:90px;
+    height:90px;
+    font-size:13px;
+  }
+
+  .circle::before{
+    inset:-4px;
+  }
+
+  /* 📦 Input panel BELOW circle */
+  .panel{
+    width:100%;
+    max-width:320px;
+    min-width:0;
+    display:none;              /* hidden by default */
+    justify-content:center;
+  }
+
+  .panel.active{
+    display:flex;              /* show below */
+  }
+
+  /* ⌨ Inputs & textarea aligned */
+  .panel input,
+  .panel textarea{
+    width:100%;
+    font-size:16px;            /* iPhone zoom fix */
+    padding:14px;
+    border-radius:14px;
+  }
+
+  .panel textarea{
+    height:90px;
+  }
+
+  /* 💾 Save button */
+  .save{
+    width:100%;
+    max-width:320px;
+    height:48px;
+    border-radius:26px;
+    font-size:15px;
+    margin-top:20px;
+  }
+
+  /* Message */
+  #msg{
+    font-size:14px;
+    text-align:center;
+    margin-top:8px;
+  }
+}
 </style>
 </head>
 

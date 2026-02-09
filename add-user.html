@@ -61,6 +61,71 @@ body {
     text-align: center;
     font-size: 14px;
 }
+/* ================= MOBILE VIEW – FINAL FIX ================= */
+@media screen and (max-width: 600px) {
+
+  /* 📱 Mobile background */
+  body{
+    background:
+      linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+      url("add_user_mob.jpg") no-repeat center/cover !important;
+
+    align-items:flex-start !important;
+    padding:20px 12px !important;
+  }
+
+  /* 📦 Center the form */
+  .form-box{
+    width:100% !important;
+    max-width:100% !important;
+    padding:22px !important;
+    border-radius:16px !important;
+
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;   /* 🔑 */
+  }
+
+  /* 📝 Heading */
+  .form-box h2{
+    width:100% !important;
+    text-align:center !important;
+    font-size:20px !important;
+  }
+
+  /* ⌨ ALL inputs & selects — SAME LINE */
+  .form-box input,
+  .form-box select{
+    width:320px !important;        /* 🔥 same width */
+    max-width:100% !important;
+    box-sizing:border-box !important;
+
+    font-size:16px !important;
+    padding:16px !important;
+    border-radius:14px !important;
+
+    margin:10px auto !important;   /* 🔥 centered */
+    display:block !important;
+  }
+
+  /* 🔘 Save button */
+  .form-box button{
+    width:160px !important;
+    height:48px !important;
+    font-size:15px !important;
+    border-radius:26px !important;
+
+    margin:18px auto 0 !important;
+    display:block !important;
+  }
+
+  /* ℹ Message */
+  #message{
+    width:100% !important;
+    text-align:center !important;
+    font-size:14px !important;
+  }
+}
 </style>
 </head>
 

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Attendance QR</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
 <style>
@@ -93,6 +94,39 @@ button:hover{
   padding:16px;
   border-radius:14px;
   border:3px solid #000;
+}
+/* Mobile view only */
+@media (max-width: 600px) {
+
+  body{
+    background:
+      linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+      url("att_mob.jpg") no-repeat center/cover;
+
+    justify-content:flex-start;
+    padding: 24px 12px;
+  }
+
+  h2{
+    font-size:20px;
+    margin-top:10px;
+  }
+
+  input{
+    width:100%;
+    max-width:320px;
+    font-size:16px;   /* prevents iPhone zoom */
+    padding:14px;
+  }
+
+  button{
+    width:70px;
+    height:70px;
+  }
+
+  #qrcode{
+    margin-top:24px;
+  }
 }
 </style>
 </head>

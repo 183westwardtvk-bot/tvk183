@@ -79,6 +79,87 @@ button{
   0%,100%{transform:scaleY(.5);opacity:.6}
   50%{transform:scaleY(1.3);opacity:1}
 }
+/* ================= MOBILE VIEW ONLY ================= */
+@media screen and (max-width: 600px) {
+
+  /* 📱 Mobile background */
+  body{
+    background:
+      linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+      url("profile_mob.jpg") no-repeat center/cover !important;
+
+    padding:16px 12px 30px !important;
+  }
+
+  /* ❌ KILL CONTAINER CARD COMPLETELY */
+  .container{
+    background:transparent !important;
+    backdrop-filter:none !important;
+    box-shadow:none !important;
+    border-radius:0 !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    margin:0 auto !important;
+    padding:0 !important;
+
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+  }
+
+  /* 📝 Title */
+  .container h2{
+    width:100% !important;
+    text-align:center !important;
+    font-size:20px !important;
+    margin-bottom:12px !important;
+  }
+
+  /* ⌨ ALL INPUTS — SAME ALIGNMENT */
+  .container input{
+    width:320px !important;        /* 🔥 SAME WIDTH */
+    max-width:100% !important;
+    box-sizing:border-box !important;
+
+    font-size:16px !important;     /* iPhone zoom fix */
+    padding:14px !important;
+    border-radius:14px !important;
+
+    margin:8px 0 !important;
+    display:block !important;
+  }
+
+  input[readonly]{
+    background:#ccc !important;
+  }
+
+  /* 📁 File inputs */
+  .container input[type="file"]{
+    background:#fff !important;
+    color:#000 !important;
+    padding:10px !important;
+  }
+
+  /* 🔘 Save button — aligned with inputs */
+  .container button{
+    width:320px !important;
+    max-width:100% !important;
+    height:48px !important;
+    border-radius:26px !important;
+    font-size:15px !important;
+
+    margin:18px 0 0 !important;
+  }
+
+  /* ℹ Message */
+  #msg{
+    width:100% !important;
+    text-align:center !important;
+    font-size:14px !important;
+    margin-top:10px !important;
+  }
+}
 </style>
 </head>
 
