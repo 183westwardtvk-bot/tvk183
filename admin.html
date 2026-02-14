@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>User Access Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  padding:20px;
+  color:#fff;
+  font-family:Arial;
+
+  background:
+    linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+    url("tvk_flag.webp") no-repeat center center fixed;
+
+  background-size: cover;      /* Makes image fill screen */
+  background-position: center; /* Keeps image centered */
+  background-repeat: no-repeat;
+  min-height: 100vh;           /* Full screen height */
+}
+
+h2{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+/* ===== INPUT ===== */
+input[type=text]{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid #ff5722;
+  background:transparent;
+  color:#fff;
+  outline:none;
+}
+
+/* ===== OVAL PREMIUM BUTTONS ===== */
+button{
+  padding:10px 26px;
+  cursor:pointer;
+  font-weight:bold;
+  color:#fff;
+  background:transparent;
+  border:2px solid transparent;
+  border-radius:999px;
+
+  background-image:
+    linear-gradient(#111,#111),
+    linear-gradient(45deg,#ffeb3b,#ff5722);
+
+  background-origin:border-box;
+  background-clip:padding-box,border-box;
+
+  transition:.3s ease;
+}
+
+button:hover{
+  background-image:
+    linear-gradient(45deg,#ffeb3b,#ff5722),
+    linear-gradient(45deg,#ffeb3b,#ff5722);
+
+  color:#000;
+}
+
+/* ===== TABLE ===== */
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  margin-top:20px;
+
+  border-collapse: separate;   /* IMPORTANT */
+  border-spacing: 0 10px;      /* Row gap */
+
+  border:2px solid #ff5722;    /* Outer border */
+  border-radius:12px;
+  padding:10px;
+
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+}
+
+/* Table header */
+th{
+  padding:14px;
+  background: rgba(255,87,34,0.15);
+  border-bottom:2px solid #ff5722;
+}
+
+/* Table cells */
+td{
+  padding:14px;
+  background: rgba(0,0,0,0.6);
+  border-top:1px solid rgba(255,255,255,0.1);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+/* Rounded effect per row */
+tbody tr td:first-child{
+  border-left:2px solid #ff5722;
+  border-radius:10px 0 0 10px;
+}
+
+tbody tr td:last-child{
+  border-right:2px solid #ff5722;
+  border-radius:0 10px 10px 0;
+}
+
+/* ===== SELECT ===== */
+select{
+  padding:6px;
+  background:transparent;
+  color:#fff;
+  border:1px solid #ff5722;
+  border-radius:8px;
+}
+
+/* ===== PERMISSION GROUP ===== */
+.permission-group{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:14px;
+}
+
+/* ===== SWITCH ===== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #333;
+  transition: .4s;
+  border-radius: 34px;
+  border:1px solid #ff5722;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 2px;
+  background-color: #fff;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+  background: linear-gradient(135deg,#ffeb3b,#ff5722);
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* ===== WAVY LOADER ===== */
+.loader-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(6px);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.wave-loader{
+  display:flex;
+  gap:8px;
+}
+
+.wave-loader span{
+  width:10px;
+  height:40px;
+  border-radius:20px;
+  background:linear-gradient(180deg,#ffeb3b,#ff5722);
+  animation:wave 1s infinite ease-in-out;
+}
+
+.wave-loader span:nth-child(2){ animation-delay:0.1s; }
+.wave-loader span:nth-child(3){ animation-delay:0.2s; }
+.wave-loader span:nth-child(4){ animation-delay:0.3s; }
+.wave-loader span:nth-child(5){ animation-delay:0.4s; }
+
+@keyframes wave{
+  0%,100%{ transform:scaleY(0.4); }
+  50%{ transform:scaleY(1.2); }
+}
+/* ===== RESPONSIVE ===== */
+.table-wrapper{
+  width:100%;
+  overflow-x:auto;
+}
+
+/* ===== MOBILE CARD VIEW ===== */
+/* ===== MOBILE SINGLE TILE DESIGN ===== */
+@media screen and (max-width:768px){
+
+/* Top Controls Single Line */
+body > input,
+body > button{
+  display:inline-block;
+  width:auto;
+  margin:5px 4px;
+}
+
+#searchMobile{
+  width:38%;
+  padding:8px 12px;
+}
+
+button{
+  padding:8px 14px;
+  font-size:13px;
+}
+
+/* Hide table header */
+#userTable thead{
+  display:none;
+}
+
+/* Convert row into card */
+#userTable,
+#userTable tbody{
+  display:block;
+}
+
+#userTable tr{
+  display:block;
+  margin-bottom:15px;
+  padding:12px;
+  border:2px solid #ff5722;
+  border-radius:12px;
+  background:rgba(0,0,0,0.65);
+}
+
+/* Remove old borders */
+#userTable td{
+  display:block;
+  border:none;
+  padding:6px 0;
+}
+
+/* ===== LINE 1 : Mobile | Role | Status ===== */
+#userTable td:nth-child(1),
+#userTable td:nth-child(2),
+#userTable td:nth-child(3){
+  display:inline-block;
+  width:32%;
+  vertical-align:top;
+}
+
+#userTable td:nth-child(2) select,
+#userTable td:nth-child(3) select{
+  width:100%;
+  font-size:12px;
+}
+
+/* ===== LINE 2 : Permissions ===== */
+#userTable td:nth-child(4){
+  display:block;
+  margin-top:8px;
+}
+
+.permission-group{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:flex-start;
+}
+
+.permission-group div{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+}
+
+/* Smaller switch */
+.switch{
+  width:36px;
+  height:18px;
+}
+
+.slider:before{
+  height:12px;
+  width:12px;
+}
+
+.switch input:checked + .slider:before{
+  transform: translateX(16px);
+}
+
+/* ===== LINE 3 : Save | Delete ===== */
+#userTable td:nth-child(5),
+#userTable td:nth-child(6){
+  display:inline-block;
+  width:48%;
+  margin-top:10px;
+}
+
+#userTable td:nth-child(5) button,
+#userTable td:nth-child(6) button{
+  width:100%;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<h2>User Access Control</h2>
+
+<input type="text" id="searchMobile" placeholder="Search by Mobile">
+<button onclick="searchUser()">Search</button>
+<button onclick="loadUsers()">Show All</button>
+<button onclick="goBack()">Back</button>
+<div class="table-wrapper">
+<table id="userTable">
+<thead>
+<tr>
+<th>Mobile</th>
+<th>Role</th>
+<th>Status</th>
+<th>Permissions</th>
+<th>Save</th>
+<th>Delete</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+<!-- WAVY LOADER -->
+<div class="loader-overlay" id="loader">
+  <div class="wave-loader">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbzOLVmw7KAZ4TJWow4BV4JfZnXqp8aBI83N4c55Wca2rkGRj25y29xklPRb-a-iMYQL/exec";
+
+const role = sessionStorage.getItem("role");
+if(role !== "admin" && role !== "superadmin"){
+  window.location.href="index.html";
+}
+
+let allUsers=[];
+
+function showLoader(){ document.getElementById("loader").style.display="flex"; }
+function hideLoader(){ document.getElementById("loader").style.display="none"; }
+
+function loadUsers(){
+showLoader();
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({action:"getUsers"})
+})
+.then(res=>res.json())
+.then(data=>{
+hideLoader();
+if(!data.success) return;
+allUsers=data.users;
+displayUsers(allUsers);
+});
+}
+
+function displayUsers(users){
+const tbody=document.querySelector("#userTable tbody");
+tbody.innerHTML="";
+
+users.forEach(user=>{
+if(user.role !== "user") return;
+
+const perms=user.permissions?user.permissions.split(","):[];
+
+tbody.innerHTML+=`
+<tr>
+<td data-label="Mobile">${user.mobile}</td>
+<td data-label="Role">
+<select id="role_${user.mobile}">
+<option value="user" selected>User</option>
+<option value="admin">Admin</option>
+<option value="superadmin">Super Admin</option>
+</select>
+</td>
+
+<td data-label="Status">
+<select id="status_${user.mobile}">
+<option value="active" ${user.status==="active"?"selected":""}>Active</option>
+<option value="inactive" ${user.status==="inactive"?"selected":""}>Inactive</option>
+</select>
+</td>
+
+<td data-label="Permissions">
+<div class="permission-group">
+
+<div>Attendance
+<label class="switch">
+<input type="checkbox" value="attendance" ${perms.includes("attendance")?"checked":""}>
+<span class="slider"></span>
+</label>
+</div>
+
+<div>Planner
+<label class="switch">
+<input type="checkbox" value="planner" ${perms.includes("planner")?"checked":""}>
+<span class="slider"></span>
+</label>
+</div>
+
+<div>Schedule
+<label class="switch">
+<input type="checkbox" value="schedule" ${perms.includes("schedule")?"checked":""}>
+<span class="slider"></span>
+</label>
+</div>
+
+<div>Balance
+<label class="switch">
+<input type="checkbox" value="balance" ${perms.includes("balance")?"checked":""}>
+<span class="slider"></span>
+</label>
+</div>
+
+<div>Media
+<label class="switch">
+<input type="checkbox" value="media" ${perms.includes("media")?"checked":""}>
+<span class="slider"></span>
+</label>
+</div>
+
+</div>
+</td>
+
+<td data-label="Save">
+<button onclick="saveUser('${user.mobile}')">Save</button>
+</td>
+
+<td data-label="Delete">
+<button onclick="deleteUser('${user.mobile}')">Delete</button>
+</td>
+
+</tr>
+`;
+});
+}
+
+function saveUser(mobile){
+showLoader();
+
+const roleValue = document.getElementById("role_"+mobile).value;
+const status = document.getElementById("status_"+mobile).value;
+
+let permissions = "";
+
+if(roleValue === "admin" || roleValue === "superadmin"){
+permissions = "attendance,planner,schedule,balance,media";
+}else{
+const row = document.getElementById("role_"+mobile).closest("tr");
+permissions = [...row.querySelectorAll("input[type=checkbox]:checked")]
+.map(cb => cb.value)
+.join(",");
+}
+
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"updateUserAccess",
+mobile:mobile,
+role:roleValue,
+status:status,
+permissions:permissions
+})
+})
+.then(res=>res.json())
+.then(data=>{
+hideLoader();
+if(data.success){
+loadUsers();
+}else{
+alert(data.message);
+}
+});
+}
+
+function deleteUser(mobile){
+if(!confirm("Delete this user?")) return;
+
+showLoader();
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"deleteUser",
+mobile:mobile
+})
+})
+.then(res=>res.json())
+.then(data=>{
+hideLoader();
+if(data.success){
+loadUsers();
+}else{
+alert(data.message);
+}
+});
+}
+
+function searchUser(){
+const mobile=document.getElementById("searchMobile").value.trim();
+if(!mobile){displayUsers(allUsers);return;}
+
+const filtered=allUsers.filter(u=>u.role==="user" && String(u.mobile).includes(mobile));
+displayUsers(filtered);
+}
+
+function goBack(){
+window.location.href="dashboard.html";
+}
+
+loadUsers();
+
+</script>
+
+</body>
+</html>

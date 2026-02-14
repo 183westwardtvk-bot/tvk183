@@ -11,7 +11,7 @@ body{
   min-height:100vh;
   background:
     linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
-    url("schedule_bg.jpg") no-repeat center/cover;
+    url("schedule.jpg") no-repeat center/cover;
   font-family:Segoe UI,sans-serif;
   color:#fff;
   display:flex;
@@ -136,6 +136,28 @@ header h1{
   text-align:center;
   font-size:14px;
 }
+/* ===== PREMIUM BACK BUTTON ===== */
+.back-btn{
+  position:fixed;
+  top:20px;
+  right:22px;
+  padding:8px 18px;
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  font-size:14px;
+  cursor:pointer;
+  color:#fff;
+  background:linear-gradient(135deg,#ffeb3b,#ff9800,#ff5722);
+  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+  transition:all .3s ease;
+  z-index:999;
+}
+
+.back-btn:hover{
+  transform:scale(1.08);
+  box-shadow:0 6px 20px rgba(0,0,0,0.7);
+}
 /* ================= MOBILE VIEW ONLY ================= */
 @media (max-width: 600px) {
 
@@ -220,12 +242,13 @@ header h1{
     text-align:center;
     margin-top:8px;
   }
+
 }
 </style>
 </head>
 
 <body>
-
+<button class="back-btn" onclick="goBack()">Back</button>
 <header>
   <h1>Schedule Planner</h1>
 </header>
@@ -264,6 +287,13 @@ header h1{
 <div id="msg"></div>
 
 <script>
+const role = sessionStorage.getItem("role");
+function goBack(){
+  window.location.href = "dashboard.html";
+}
+if (!role) {
+    window.location.href = "index.html";
+}
 const API_URL = "https://script.google.com/macros/s/AKfycbzOLVmw7KAZ4TJWow4BV4JfZnXqp8aBI83N4c55Wca2rkGRj25y29xklPRb-a-iMYQL/exec";
 
 /* OPEN SIDE PANEL */

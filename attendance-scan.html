@@ -97,6 +97,11 @@ button{
 </div>
 
 <script>
+const role = sessionStorage.getItem("role");
+
+if (!role) {
+    window.location.href = "index.html";
+}  
 const params = new URLSearchParams(window.location.search);
 document.getElementById("meeting").value = params.get("meeting");
 document.getElementById("date").value = params.get("date");

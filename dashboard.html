@@ -16,7 +16,6 @@ body {
     color: #fff;
 }
 
-/* Bottom center menu */
 .dashboard {
     position: fixed;
     bottom: 30px;
@@ -28,7 +27,6 @@ body {
     justify-content: center;
 }
 
-/* Circle outline button */
 .card {
     width: 120px;
     height: 120px;
@@ -43,7 +41,6 @@ body {
     font-weight: bold;
 }
 
-/* Animated yellow-red border */
 .card::before {
     content: "";
     position: absolute;
@@ -80,31 +77,25 @@ body {
     color: #ff6b6b;
     font-weight: bold;
 }
-@media (max-width: 600px) {
 
+@media (max-width: 600px) {
     body {
         background:
-            linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-            url("tvk_dashboard_mobile.webp") no-repeat center/cover;
+            linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+            url("tvk_dashboard_mob.jpg") no-repeat center/cover;
     }
-}
-/* Mobile circle alignment */
-@media (max-width: 600px) {
 
     .dashboard {
         position: fixed;
         bottom: 10px;
         left: 0;
         transform: none;
-
         width: 100%;
         padding: 0 12px;
-
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         row-gap: 16px;
         column-gap: 12px;
-
         justify-items: center;
     }
 
@@ -118,15 +109,6 @@ body {
         line-height: 1.2;
     }
 }
-/* Mobile background only */
-@media (max-width: 600px) {
-
-    body {
-        background:
-            linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-            url("tvk_dashboard_mob.jpg") no-repeat center/cover;
-    }
-}
 </style>
 </head>
 
@@ -137,42 +119,103 @@ body {
 <div class="dashboard">
 
     <!-- ADMIN MENUS -->
-    <div class="card admin-only" onclick="go('admin.html')"><span>Admin</span></div>
-    <div class="card admin-only" onclick="go('schedule.html')"><span>Schedule<br>Planner</span></div>
+    <div class="card admin-only" onclick="go('admin.html')">
+        <span>Admin</span>
+    </div>
 
-    <!-- USER DATA (FLOW CONTROLLED) -->
-    <div class="card admin-only" onclick="openUserData()"><span>User<br>Data</span></div>
+    <div class="card admin-only" onclick="go('schedule.html')">
+        <span>Schedule<br>Planner</span>
+    </div>
 
-    <div class="card admin-only" onclick="go('plannerlist.html')"><span>Planner<br>List</span></div>
-    <div class="card admin-only" onclick="go('media.html')"><span>Media<br>Upload</span></div>
-    <div class="card admin-only" onclick="go('balancesheet.html')"><span>Balance<br>Sheet</span></div>
-    <div class="card admin-only" onclick="go('attendance.html')"><span>Attendance<br>Sheet</span>
-</div>
-    <!-- USER ONLY -->
-    <div class="card user-only" onclick="go('my-profile.html')"><span>My<br>Profile</span></div>
+    <div class="card admin-only" onclick="openUserData()">
+        <span>User<br>Data</span>
+    </div>
+
+    <div class="card admin-only" onclick="go('plannerlist.html')">
+        <span>Planner<br>List</span>
+    </div>
+
+    <div class="card admin-only" onclick="go('media.html')">
+        <span>Media<br>Upload</span>
+    </div>
+
+    <div class="card admin-only" onclick="go('balancesheet.html')">
+        <span>Balance<br>Sheet</span>
+    </div>
+
+    <div class="card admin-only" onclick="go('attendance.html')">
+        <span>Attendance<br>Sheet</span>
+    </div>
+
+    <!-- USER PROFILE -->
+    <div class="card user-only" onclick="go('my-profile.html')">
+        <span>My<br>Profile</span>
+    </div>
 
 </div>
 
 <script>
+
 const role = sessionStorage.getItem("role");
+const permissions = sessionStorage.getItem("permissions") || "";
 
 /* Block direct dashboard access */
 if (!role) {
     window.location.href = "index.html";
 }
 
-/* Role-based menu visibility */
-if (role === "admin") {
-    document.querySelectorAll(".user-only").forEach(e => e.style.display = "none");
-} else {
-    document.querySelectorAll(".admin-only").forEach(e => e.style.display = "none");
+const userRole = role.toLowerCase();
+
+/* ===============================
+   ADMIN & SUPERADMIN → FULL ACCESS
+=================================*/
+if (userRole === "admin" || userRole === "superadmin") {
+
+    // Hide only My Profile
+    document.querySelectorAll(".user-only")
+        .forEach(e => e.style.display = "none");
+}
+
+/* ===============================
+   USER → PERMISSION BASED
+=================================*/
+else if (userRole === "user") {
+
+    // Hide all admin menus first
+    document.querySelectorAll(".admin-only")
+        .forEach(e => e.style.display = "none");
+
+    // Always show My Profile
+    document.querySelector(".user-only")
+        .style.display = "flex";
+
+    const allowed = permissions.split(",");
+
+    function showMenu(page) {
+        const el = document.querySelector(`[onclick="go('${page}')"]`);
+        if (el) el.style.display = "flex";
+    }
+
+    if (allowed.includes("schedule"))
+        showMenu("schedule.html");
+
+    if (allowed.includes("planner"))
+        showMenu("plannerlist.html");
+
+    if (allowed.includes("media"))
+        showMenu("media.html");
+
+    if (allowed.includes("balance"))
+        showMenu("balancesheet.html");
+
+    if (allowed.includes("attendance"))
+        showMenu("attendance.html");
 }
 
 function go(page) {
     window.location.href = page;
 }
 
-/* 🔐 Flow control for User Data */
 function openUserData() {
     sessionStorage.setItem("fromDashboard", "true");
     window.location.href = "userdata.html";
@@ -180,8 +223,9 @@ function openUserData() {
 
 function logout() {
     sessionStorage.clear();
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 }
+
 </script>
 
 </body>

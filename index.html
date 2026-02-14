@@ -121,7 +121,7 @@ function login() {
             // 🔐 store role
             sessionStorage.setItem("role", data.role);
             sessionStorage.setItem("mobile", mobile);
-
+            sessionStorage.setItem("permissions", data.permissions || "");
             message.style.color = "#4CAF50";
             message.innerText = "Login Successful";
 

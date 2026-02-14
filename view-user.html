@@ -115,6 +115,28 @@ body{
   0%,100%{transform:scaleY(.4);opacity:.5}
   50%{transform:scaleY(1.4);opacity:1}
 }
+/* ===== PREMIUM BACK BUTTON ===== */
+.back-btn{
+  position:fixed;
+  top:20px;
+  right:22px;
+  padding:8px 18px;
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  font-size:14px;
+  cursor:pointer;
+  color:#fff;
+  background:linear-gradient(135deg,#ffeb3b,#ff9800,#ff5722);
+  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+  transition:all .3s ease;
+  z-index:999;
+}
+
+.back-btn:hover{
+  transform:scale(1.08);
+  box-shadow:0 6px 20px rgba(0,0,0,0.7);
+}
 /* ================= MOBILE VIEW ONLY ================= */
 @media (max-width: 600px) {
 
@@ -123,6 +145,16 @@ body{
     background:
       linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
       url("view_mob.jpg") no-repeat center/cover;
+
+    padding-top:70px;   /* ✅ Prevent overlap */
+  }
+
+  /* 🔙 Back button adjust */
+  .back-btn{
+    top:15px;
+    right:15px;
+    font-size:13px;
+    padding:6px 16px;
   }
 
   /* Header */
@@ -154,36 +186,31 @@ body{
     flex-shrink:0;
   }
 
-  /* 🔑 Text container (Name, Mobile, Voter) */
   .row-top > div{
     width:100%;
   }
 
-  /* Stack ALL text cleanly */
   .row-top > div:not(.avatar){
     display:flex;
     flex-direction:column;
     gap:6px;
   }
 
-  /* Mobile & Voter shown ONE AFTER ANOTHER */
   .label{
     font-size:11px;
   }
 
   .value{
     font-size:14px;
-    white-space:normal;   /* 🔥 prevents overlap */
+    white-space:normal;
     word-break:break-word;
   }
 
-  /* More button */
   .more-btn{
     margin:10px auto 0;
     display:block;
   }
 
-  /* Details section */
   .details-grid{
     grid-template-columns:1fr;
     gap:8px;
@@ -197,7 +224,7 @@ body{
 </head>
 
 <body>
-
+<button class="back-btn" onclick="goBack()">⬅ Back</button>
 <!-- 🔥 LOADER -->
 <div id="loaderOverlay">
   <div class="wave-loader">
@@ -209,6 +236,14 @@ body{
 <div class="list" id="userList">Loading...</div>
 
 <script>
+function goBack(){
+  window.location.href = "userdata.html";
+}
+const role = sessionStorage.getItem("role");
+
+if (!role) {
+    window.location.href = "index.html";
+}
 const API_URL = "https://script.google.com/macros/s/AKfycbzOLVmw7KAZ4TJWow4BV4JfZnXqp8aBI83N4c55Wca2rkGRj25y29xklPRb-a-iMYQL/exec";
 
 /* IMAGE FIX */

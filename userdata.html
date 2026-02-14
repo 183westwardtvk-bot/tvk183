@@ -55,21 +55,27 @@ body {
     to { transform: rotate(360deg); }
 }
 
-.back {
+.back-btn {
     position: fixed;
-    top: 18px;
-    left: 24px;
+    top: 20px;
+    right: 24px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 14px;
     cursor: pointer;
-    color: #ffeb3b;
+    color: #fff;
+    background: linear-gradient(135deg, #ffeb3b, #ff9800, #ff5722);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    transition: all .3s ease;
 }
 
-.logout {
-    position: fixed;
-    top: 18px;
-    right: 24px;
-    cursor: pointer;
-    color: #ff6b6b;
+.back-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.7);
 }
+
 /* ================= MOBILE VIEW ONLY ================= */
 @media (max-width: 600px) {
 
@@ -80,15 +86,7 @@ body {
       url("user_mob.jpg") no-repeat center/cover;
   }
 
-  /* 🔙 Back & Logout smaller */
-  .back,
-  .logout{
-    font-size:14px;
-    top:12px;
-  }
 
-  .back{ left:12px; }
-  .logout{ right:12px; }
 
   /* 🔵 Center menu properly */
   .menu{
@@ -120,15 +118,16 @@ body {
 
 <body>
 
-<div class="back" onclick="goBack()">← Dashboard</div>
-<div class="logout" onclick="logout()">Logout</div>
 
+
+<button class="back-btn" onclick="goBack()">Back</button>
 <div class="menu">
     <div class="card" onclick="openAddUser()"><span>Add<br>User</span></div>
     <div class="card" onclick="go('view-user.html')"><span>View<br>User</span></div>
 </div>
 
 <script>
+
 const role = sessionStorage.getItem("role");
 const fromDashboard = sessionStorage.getItem("fromDashboard");
 
@@ -152,9 +151,8 @@ function goBack() {
     window.location.href = "dashboard.html";
 }
 
-function logout() {
-    sessionStorage.clear();
-    window.location.href = "index.html";
+function goBack() {
+    window.location.href = "dashboard.html";
 }
 </script>
 

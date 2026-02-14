@@ -18,10 +18,14 @@ body{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  background:#111;
-  color:#fff;
   font-family:Segoe UI;
   text-align:center;
+  color:#fff;
+
+  /* 🖼 DESKTOP BACKGROUND IMAGE */
+  background:
+    linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+    url("att.jpg") no-repeat center/cover;
 }
 
 h2{
@@ -29,30 +33,22 @@ h2{
 }
 
 input{
-  width:100%;
-  max-width:320px;
-  height:52px;        /* 🔥 same height for all inputs */
-  padding:0 14px;
+  width:280px;
+  padding:12px;
   margin:10px 0;
   border-radius:10px;
   border:none;
-  font-size:16px;
-  box-sizing:border-box;
+  font-size:15px;
 }
 
-/* Fix date input difference */
-input[type="date"]{
-  padding-right:14px;
-}
-
-/* 🔵 OUTLINE CIRCULAR BUTTON */
-button{
+/* 🔵 ONLY QR BUTTON STYLE */
+.qr-btn{
   margin-top:22px;
   width:78px;
   height:78px;
   border-radius:50%;
   background:transparent;
-  border:4px solid #ff9800;      /* 🔥 thicker border */
+  border:4px solid #ff9800;
   color:#ff9800;
   font-size:18px;
   font-weight:bold;
@@ -64,33 +60,26 @@ button{
   overflow:visible;
 }
 
-/* ✨ Bigger pulse ring */
-button::after{
+.qr-btn::after{
   content:"";
   position:absolute;
-  inset:-12px;                   /* 🔥 bigger ring */
+  inset:-12px;
   border-radius:50%;
   border:3px solid rgba(255,152,0,.55);
   animation:pulse 1.8s ease-out infinite;
 }
 
 @keyframes pulse{
-  0%{
-    transform:scale(.85);
-    opacity:1;
-  }
-  100%{
-    transform:scale(1.35);
-    opacity:0;
-  }
+  0%{ transform:scale(.85); opacity:1; }
+  100%{ transform:scale(1.35); opacity:0; }
 }
 
-button:hover{
+.qr-btn:hover{
   border-color:#ffb74d;
   color:#ffb74d;
 }
 
-/* QR */
+/* QR box */
 #qrcode{
   margin-top:30px;
   display:flex;
@@ -103,8 +92,32 @@ button:hover{
   border-radius:14px;
   border:3px solid #000;
 }
-/* Mobile view only */
-@media (max-width: 600px) {
+
+/* ===== SAME MEDIA BACK BUTTON ===== */
+.back-btn{
+  position:fixed;
+  top:20px;
+  right:22px;
+  padding:8px 18px;
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  font-size:14px;
+  cursor:pointer;
+  color:#fff;
+  background:linear-gradient(135deg,#ffeb3b,#ff9800,#ff5722);
+  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+  transition:all .3s ease;
+  z-index:999;
+}
+
+.back-btn:hover{
+  transform:scale(1.08);
+  box-shadow:0 6px 20px rgba(0,0,0,0.7);
+}
+
+/* Mobile */
+@media (max-width: 600px){
 
   body{
     background:
@@ -112,7 +125,7 @@ button:hover{
       url("att_mob.jpg") no-repeat center/cover;
 
     justify-content:flex-start;
-    padding: 24px 12px;
+    padding:24px 12px;
   }
 
   h2{
@@ -123,11 +136,11 @@ button:hover{
   input{
     width:100%;
     max-width:320px;
-    font-size:16px;   /* prevents iPhone zoom */
+    font-size:16px;
     padding:14px;
   }
 
-  button{
+  .qr-btn{
     width:70px;
     height:70px;
   }
@@ -135,38 +148,60 @@ button:hover{
   #qrcode{
     margin-top:24px;
   }
+
+  .back-btn{
+    top:15px;
+    right:15px;
+    font-size:13px;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<button class="back-btn" onclick="goBack()">Back</button>
+
 <h2>Generate Attendance QR</h2>
 
 <input type="date" id="date">
 <input id="meeting" placeholder="Meeting Name">
 
-<!-- ⭕ Thick animated outline button -->
-<button onclick="generateQR()">QR</button>
+<button class="qr-btn" onclick="generateQR()">QR</button>
 
 <div id="qrcode"></div>
 
 <script>
+  const role = sessionStorage.getItem("role");
+const permissions = sessionStorage.getItem("permissions") || "";
+
+if (!role) {
+  window.location.href = "index.html";
+}
+
+/* Allow only admin, superadmin OR user with media permission */
+if (role === "user" && !permissions.includes("attendance")) {
+  window.location.href = "dashboard.html";
+}
+function goBack(){
+  window.location.href="dashboard.html";
+}
+
 function generateQR(){
-  const date = document.getElementById("date").value;
-  const meeting = document.getElementById("meeting").value;
+  const date=document.getElementById("date").value;
+  const meeting=document.getElementById("meeting").value;
 
   if(!date || !meeting){
     alert("Enter date & meeting name");
     return;
   }
 
-  const url =
-    "https://183westwardtvk-bot.github.io/tvk183/attendance-scan.html" +
-    "?date=" + encodeURIComponent(date) +
-    "&meeting=" + encodeURIComponent(meeting);
+  const url="attendance-scan.html?date="+
+            encodeURIComponent(date)+
+            "&meeting="+
+            encodeURIComponent(meeting);
 
-  document.getElementById("qrcode").innerHTML =
+  document.getElementById("qrcode").innerHTML=
     '<div class="qr-box" id="qr"></div>';
 
   new QRCode(document.getElementById("qr"),{
@@ -175,9 +210,8 @@ function generateQR(){
     height:260
   });
 }
+
 </script>
 
 </body>
-
 </html>
-

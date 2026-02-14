@@ -163,6 +163,28 @@ th{
   0%,40%,100%{transform:scaleY(.4)}
   20%{transform:scaleY(1)}
 }
+/* ===== PREMIUM BACK BUTTON ===== */
+.back-btn{
+  position:fixed;
+  top:20px;
+  right:22px;
+  padding:8px 18px;
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  font-size:14px;
+  cursor:pointer;
+  color:#fff;
+  background:linear-gradient(135deg,#ffeb3b,#ff9800,#ff5722);
+  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+  transition:all .3s ease;
+  z-index:999;
+}
+
+.back-btn:hover{
+  transform:scale(1.08);
+  box-shadow:0 6px 20px rgba(0,0,0,0.7);
+}
 /* ================= MOBILE VIEW ONLY ================= */
 @media (max-width: 600px) {
 
@@ -253,7 +275,7 @@ th{
 </head>
 
 <body>
-
+<button class="back-btn" onclick="goBack()">⬅ Back</button>
 <h1>Balance Sheet</h1>
 
 <div class="actions">
@@ -348,6 +370,14 @@ th{
 </div>
 
 <script>
+function goBack(){
+  window.location.href = "dashboard.html";
+}  
+const role = sessionStorage.getItem("role");
+
+if (!role) {
+    window.location.href = "index.html";
+}  
 const API_URL = "https://script.google.com/macros/s/AKfycbzOLVmw7KAZ4TJWow4BV4JfZnXqp8aBI83N4c55Wca2rkGRj25y29xklPRb-a-iMYQL/exec";
 const loader=document.getElementById("loader");
 
